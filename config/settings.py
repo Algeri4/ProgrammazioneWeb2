@@ -76,10 +76,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nome_del_tuo_database',
+        'NAME': 'my_alv',
         'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'localhost', 
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
