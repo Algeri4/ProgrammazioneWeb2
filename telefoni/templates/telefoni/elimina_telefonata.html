@@ -1,0 +1,40 @@
+{% extends 'telefoni/base.html' %}
+
+{% block content %}
+<div class="card card-custom">
+    <div class="card-header bg-white">
+        <h3><i class="fa-solid fa-trash"></i> Elimina Telefonata</h3>
+    </div>
+    <div class="card-body">
+        <p class="alert alert-warning">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Sei sicuro di voler eliminare questa telefonata?
+        </p>
+
+        <table class="table table-bordered">
+            <tr>
+                <th>Numero:</th>
+                <td>{{ telefonata.effettuatada }}</td>
+            </tr>
+            <tr>
+                <th>Data/Ora:</th>
+                <td>{{ telefonata.data|date:"d/m/Y" }} alle {{ telefonata.ora|time:"H:i" }}</td>
+            </tr>
+            <tr>
+                <th>Durata:</th>
+                <td>{{ telefonata.durata }} minuti</td>
+            </tr>
+            <tr>
+                <th>Costo:</th>
+                <td>€ {{ telefonata.costo|floatformat:2 }}</td>
+            </tr>
+        </table>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Sì, elimina</button>
+            <a href="/telefonate/cerca/" class="btn btn-secondary">Annulla</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

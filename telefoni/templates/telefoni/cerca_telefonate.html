@@ -1,0 +1,72 @@
+{% extends 'telefoni/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-white">
+        <h3>🔍 Cerca Telefonate</h3>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-12">
+                <input type="text" name="q" id="id_query" class="form-control" value="{{ query }}" placeholder="Cerca per numero o nominativo...">
+            </div>
+            <div class="col-md-5">
+                <input type="date" name="data_from" class="form-control" value="{{ data_from }}" placeholder="Data dal">
+            </div>
+            <div class="col-md-5">
+                <input type="date" name="data_to" class="form-control" value="{{ data_to }}" placeholder="Data al">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-salmon w-100">Cerca</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-white">
+        <h3>Risultati Telefonate</h3>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead style="background-color: #FCC9C0;">
+                <tr><th>Nominativo</th><th>Numero</th><th>Data/Ora</th><th>Durata</th><th>Costo</th><th>Azioni</th></tr>
+            </thead>
+            <tbody>
+                {% for t in risultati %}
+                <tr>
+                    <td>{{ t.effettuatada.nominativo|default:"Sconosciuto" }}</td>
+                    <td>{{ t.effettuatada.numero }}</td>
+                    <td>{{ t.data|date:"d/m/Y" }} {{ t.ora|time:"H:i" }}</td>
+                    <td>{{ t.durata }} min</td>
+                    <td>{% if t.costo > 0 %}€ {{ t.costo|floatformat:2 }}{% else %}{{ t.durata }} min{% endif %}</td>
+                    <td>
+                        <a href="/telefonate/modifica/{{ t.id }}/" class="btn btn-sm btn-warning">✏️</a>
+                        <a href="/telefonate/elimina/{{ t.id }}/" class="btn btn-sm btn-danger">🗑️</a>
+                    </td>
+                </tr>
+                {% empty %}
+                30<td colspan="6" class="text-center">Nessuna telefonata trovata</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $("#id_query").autocomplete({
+        source: "/telefonate/autocomplete/?tipo=telefonate",
+        minLength: 2,
+        select: function(event, ui) {
+            $("#id_query").val(ui.item.value);
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'telefoni/base.html' %}
+
+{% block content %}
+<div class="card card-custom">
+    <div class="card-header bg-white">
+        <h3><i class="fa-solid fa-phone-plus"></i> Inserisci Nuova Telefonata</h3>
+    </div>
+    <div class="card-body">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Numero di telefono *</label>
+                <input type="text" name="numero" id="id_numero" class="form-control" required placeholder="Es. 3331234567">
+                <small class="text-muted">Il numero deve esistere nel database contratti</small>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Data *</label>
+                    <input type="date" name="data" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ora *</label>
+                    <input type="time" name="ora" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Durata (minuti) *</label>
+                    <input type="number" name="durata" class="form-control" step="1" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Costo (€) - solo per ricarica</label>
+                    <input type="number" name="costo" class="form-control" step="0.01" value="0">
+                    <small class="text-muted">Per contratti consumo viene ignorato</small>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-salmon">
+                    <i class="fa-solid fa-save"></i> Salva
+                </button>
+                <a href="/telefonate/cerca/" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $("#id_numero").autocomplete({
+        source: "/telefonate/autocomplete/?tipo=insert",
+        minLength: 2,
+        select: function(event, ui) {
+            $("#id_numero").val(ui.item.value);
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

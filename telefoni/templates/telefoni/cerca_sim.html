@@ -1,0 +1,94 @@
+{% extends 'telefoni/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-white">
+        <h3>💳 Cerca SIM</h3>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" name="q" id="id_query" class="form-control" value="{{ query }}"
+                       placeholder="Cerca per codice SIM o numero di telefono associato...">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-salmon w-100">Cerca</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if query %}
+<div class="card mt-4">
+    <div class="card-header bg-white">
+        <h3>Risultati SIM</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background-color: #FCC9C0;">
+                    <tr>
+                        <th>Codice SIM</th>
+                        <th>Tipo</th>
+                        <th>Stato</th>
+                        <th>Telefono Associato</th>
+                        <th>Data Attivazione</th>
+                        <th>Data Disattivazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in risultati %}
+                    <tr>
+                        <td>{{ s.codice }}</td>
+                        <td>{{ s.tipo }}</td>
+                        <td>
+                            {% if s.stato == 'Attiva' %}
+                                <span class="badge bg-success">Attiva</span>
+                            {% elif s.stato == 'Disattivata' %}
+                                <span class="badge bg-danger">Disattivata</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Non Attiva</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if s.telefono %}
+                                <a href="/telefonate/cerca/?q={{ s.telefono }}" class="link-tel">
+                                    {{ s.telefono }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ s.data_attivazione|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ s.data_disattivazione|date:"d/m/Y"|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-circle-info"></i> Nessuna SIM trovata per "{{ query }}"
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $("#id_query").autocomplete({
+        source: "/telefonate/autocomplete/?tipo=sim",
+        minLength: 2,
+        select: function(event, ui) {
+            $("#id_query").val(ui.item.value);
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

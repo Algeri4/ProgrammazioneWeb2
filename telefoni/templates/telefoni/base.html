@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniFon - BackOffice Django</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        body {
+            background-color: #FDE2D4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-custom {
+            background-color: #F5A89C;
+        }
+        .navbar-custom .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+        .navbar-custom .nav-link:hover {
+            background-color: #E08E82;
+            border-radius: 5px;
+        }
+        .footer-custom {
+            background-color: #FCC9C0;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        .btn-salmon {
+            background-color: #F5A89C;
+            border: none;
+            color: #4A4A4A;
+        }
+        .btn-salmon:hover {
+            background-color: #E08E82;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-white p-3 shadow-sm">
+        <h1 class="text-center" style="color: #E08E82;">
+            <i class="fa-solid fa-phone"></i> UniFon - BackOffice
+        </h1>
+    </header>
+
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telefonate/cerca/">🔍 Cerca Telefonate</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telefonate/inserisci/">📞 Inserisci Telefonata</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telefonate/contratti/">📄 Cerca Contratti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telefonate/sim/">💳 Cerca SIM</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer-custom">
+        <p>Progetto universitario del gruppo EsperiaBoys - Interfaccia Back-Office Django</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

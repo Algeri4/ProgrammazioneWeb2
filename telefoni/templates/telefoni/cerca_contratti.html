@@ -1,0 +1,97 @@
+{% extends 'telefoni/base.html' %}
+
+{% block content %}
+<div class="card card-custom">
+    <div class="card-header bg-white">
+        <h3><i class="fa-solid fa-file-signature"></i> Cerca Contratti</h3>
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-10">
+               <input type="text" name="q" id="id_query" class="form-control" value="{{ query }}" placeholder="Cerca per numero di telefono o nominativo...">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-salmon w-100">
+                    <i class="fa-solid fa-magnifying-glass"></i> Cerca
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if query %}
+<div class="card card-custom mt-4">
+    <div class="card-header bg-white">
+        <h3>Risultati Contratti</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background-color: var(--salmon-light);">
+                    <tr>
+                        <th>Numero Telefono</th>
+                        <th>Intestatario</th>
+                        <th>Data Attivazione</th>
+                        <th>Tipo Contratto</th>
+                        <th>Residuo</th>
+                        <th class="text-center">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in risultati %}
+                    <tr>
+                        <td>
+                            <i class="fa-solid fa-phone"></i>
+                            <a href="/telefonate/cerca/?q={{ c.numero }}" class="link-tel">
+                                {{ c.numero }}
+                            </a>
+                        </td>
+                        <td>
+                            <i class="fa-solid fa-user"></i>
+                            {{ c.nominativo|default:"-" }}
+                        </td>
+                        <td>{{ c.dataattivazione|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if c.tipo == 'ricarica' %}
+                                <span class="badge bg-success">Ricarica</span>
+                            {% else %}
+                                <span class="badge bg-info">Consumo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.tipo == 'ricarica' %}
+                                € {{ c.creditoresiduo|floatformat:2 }}
+                            {% else %}
+                                {{ c.minutiresidui }} min
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="/telefonate/inserisci/?numero={{ c.numero }}" class="btn btn-sm btn-success">
+                                <i class="fa-solid fa-phone-plus"></i> Aggiungi chiamata
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-circle-info"></i> Nessun contratto trovato per "{{ query }}"
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $("#id_query").autocomplete({
+        source: "/telefonate/autocomplete/?tipo=contratti",
+        minLength: 2
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}
