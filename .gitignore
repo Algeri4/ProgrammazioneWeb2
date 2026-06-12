@@ -1,8 +1,11 @@
-# Bytecode Python compilato
+# Bytecode e cache Python
 __pycache__/
 *.py[cod]
 *.pyc
 
-# Specifico per le cartelle del progetto
-config/__pycache__/
-telefoni/__pycache__/
+# Ambiente virtuale
+venv_telefoni/
+
+# File di configurazione locali (se presenti)
+db.sqlite3
+.env
