@@ -1,0 +1,6 @@
+# Ignora tutti i file compilati di Python e le loro cartelle
+__pycache__/
+*.pyc
+
+# Ignora l'ambiente virtuale locale
+venv_telefoni/
