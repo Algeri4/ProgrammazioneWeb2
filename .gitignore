@@ -1,6 +1,8 @@
-# Ignora tutti i file compilati di Python e le loro cartelle
+# Bytecode Python compilato
 __pycache__/
+*.py[cod]
 *.pyc
 
-# Ignora l'ambiente virtuale locale
-venv_telefoni/
+# Specifico per le cartelle del progetto
+config/__pycache__/
+telefoni/__pycache__/
