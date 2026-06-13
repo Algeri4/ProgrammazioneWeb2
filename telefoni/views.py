@@ -6,28 +6,50 @@ from django.db import connection
 from django.contrib import messages
 from datetime import datetime
 from django.http import JsonResponse
-
-
+from datetime import date
 
 def modifica_telefonata(request, id):
     telefonata = get_object_or_404(Telefonata.objects.select_related('effettuatada'), id=id)
-
+    contratto = telefonata.effettuatada
+    
     if request.method == 'POST':
-        telefonata.data = request.POST.get('data')
-        telefonata.ora = request.POST.get('ora')
-        telefonata.durata = request.POST.get('durata')
-
-        if request.POST.get('costo'):
-            telefonata.costo = request.POST.get('costo')
+        nuova_data = request.POST.get('data')
+        nuova_ora = request.POST.get('ora')
+        nuova_durata = request.POST.get('durata')
+        nuovo_costo = request.POST.get('costo', 0)
+        
+        # Controllo: data non vuota
+        if not nuova_data:
+            messages.error(request, 'La data è obbligatoria.')
+            return render(request, 'telefoni/modifica_telefonata.html', {'telefonata': telefonata})
+        
+        # 1. Data non nel futuro
+        if nuova_data > str(date.today()):
+            messages.error(request, 'La data della telefonata non può essere nel futuro.')
+            return render(request, 'telefoni/modifica_telefonata.html', {'telefonata': telefonata})
+        
+        # 2. Data non antecedente all'attivazione del contratto
+        if nuova_data < str(contratto.dataattivazione):
+            messages.error(request, f'La data non può essere antecedente all\'attivazione del contratto ({contratto.dataattivazione}).')
+            return render(request, 'telefoni/modifica_telefonata.html', {'telefonata': telefonata})
+        
+        # (Opzionale) Controllo SIM attiva/disattivata - se vuoi aggiungerlo, prendi spunto da insert_call.php
+        
+        # Aggiornamento campi
+        telefonata.data = nuova_data
+        telefonata.ora = nuova_ora
+        telefonata.durata = nuova_durata
+        if contratto.tipo == 'ricarica':
+            telefonata.costo = float(nuovo_costo) if nuovo_costo else 0
         else:
             telefonata.costo = 0
-
+        
         telefonata.save()
+        
+        messages.success(request, 'Telefonata modificata con successo.')
         return redirect('/telefonate/cerca/')
-
-    context = {
-        'telefonata': telefonata,
-    }
+    
+    context = {'telefonata': telefonata}
     return render(request, 'telefoni/modifica_telefonata.html', context)
 
 def elimina_telefonata(request, id):
